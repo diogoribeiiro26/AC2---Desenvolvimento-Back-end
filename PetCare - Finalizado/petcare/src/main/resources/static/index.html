@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PetCare - Sistema de Gestão</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f4f8;
+      color: #333;
+    }
+
+    header {
+      background-color: #2c7be5;
+      color: white;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    header h1 {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    header span.badge {
+      background: #f0a500;
+      color: white;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 2px 8px;
+      border-radius: 12px;
+      text-transform: uppercase;
+    }
+
+    nav {
+      background-color: #1a5cbf;
+      display: flex;
+      gap: 4px;
+      padding: 0 24px;
+    }
+
+    nav button {
+      background: none;
+      border: none;
+      color: #cde;
+      padding: 12px 18px;
+      cursor: pointer;
+      font-size: 14px;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+
+    nav button:hover {
+      color: white;
+      background: rgba(255,255,255,0.08);
+    }
+
+    nav button.active {
+      color: white;
+      border-bottom: 3px solid #f0a500;
+      font-weight: 600;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+
+    .card h2 {
+      font-size: 17px;
+      margin-bottom: 18px;
+      color: #2c7be5;
+      border-left: 4px solid #2c7be5;
+      padding-left: 10px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #555;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+      margin-bottom: 14px;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    input:focus, select:focus {
+      border-color: #2c7be5;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    button.btn {
+      background-color: #2c7be5;
+      color: white;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    button.btn:hover {
+      background-color: #1a5cbf;
+    }
+
+    button.btn-success {
+      background-color: #28a745;
+    }
+
+    button.btn-success:hover {
+      background-color: #1f8a3a;
+    }
+
+    button.btn-warning {
+      background-color: #f0a500;
+    }
+
+    button.btn-warning:hover {
+      background-color: #c98900;
+    }
+
+    .alert {
+      padding: 11px 16px;
+      border-radius: 5px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .alert.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .alert.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    table th {
+      background-color: #f5f7fa;
+      color: #555;
+      font-weight: 700;
+      text-align: left;
+      padding: 10px 14px;
+      border-bottom: 2px solid #e0e4ea;
+    }
+
+    table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #eee;
+      vertical-align: middle;
+    }
+
+    table tr:hover td {
+      background-color: #f9fbff;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #e8f0fe;
+      color: #2c7be5;
+      border-radius: 12px;
+      padding: 2px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      margin: 2px;
+    }
+
+    .tag.setor {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #999;
+      font-size: 14px;
+    }
+
+    .empty-state span {
+      font-size: 36px;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .inline-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    .inline-row .grow {
+      flex: 1;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .section-header h2 {
+      font-size: 17px;
+      color: #2c7be5;
+      border-left: 4px solid #2c7be5;
+      padding-left: 10px;
+      margin: 0;
+    }
+
+    .counter {
+      font-size: 12px;
+      background: #e8f0fe;
+      color: #2c7be5;
+      border-radius: 20px;
+      padding: 2px 10px;
+      font-weight: 700;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      font-size: 12px;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>🐾</div>
+  <h1>PetCare</h1>
+  <span class="badge">Sistema Interno</span>
+</header>
+
+<nav>
+  <button class="active" onclick="showPage('setores', this)">Setores</button>
+  <button onclick="showPage('funcionarios', this)">Funcionários</button>
+  <button onclick="showPage('projetos', this)">Projetos</button>
+  <button onclick="showPage('vincular', this)">Vincular</button>
+</nav>
+
+<!-- ===================== SETORES ===================== -->
+<div class="container">
+  <div class="page active" id="page-setores">
+    <div class="card">
+      <h2>Cadastrar Setor</h2>
+      <div id="alert-setor" class="alert"></div>
+      <label>Nome do Setor</label>
+      <input type="text" id="nomeSetor" placeholder="Ex: Veterinária, Recepção..." />
+      <button class="btn btn-success" onclick="cadastrarSetor()">Salvar Setor</button>
+    </div>
+
+    <div class="card">
+      <div class="section-header">
+        <h2>Setores Cadastrados</h2>
+        <span class="counter" id="countSetores">0</span>
+      </div>
+      <div id="tabelaSetores">
+        <div class="empty-state"><span>🏢</span>Nenhum setor cadastrado ainda.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== FUNCIONÁRIOS ===================== -->
+  <div class="page" id="page-funcionarios">
+    <div class="card">
+      <h2>Cadastrar Funcionário</h2>
+      <div id="alert-func" class="alert"></div>
+      <div class="form-row">
+        <div>
+          <label>Nome</label>
+          <input type="text" id="nomeFuncionario" placeholder="Nome completo" />
+        </div>
+        <div>
+          <label>Cargo</label>
+          <input type="text" id="cargoFuncionario" placeholder="Ex: Veterinário, Assistente..." />
+        </div>
+      </div>
+      <label>Setor</label>
+      <select id="setorFuncionario">
+        <option value="">-- Selecione um setor --</option>
+      </select>
+      <button class="btn btn-success" onclick="cadastrarFuncionario()">Salvar Funcionário</button>
+    </div>
+
+    <div class="card">
+      <div class="section-header">
+        <h2>Funcionários Cadastrados</h2>
+        <span class="counter" id="countFuncionarios">0</span>
+      </div>
+      <div id="tabelaFuncionarios">
+        <div class="empty-state"><span>👤</span>Nenhum funcionário cadastrado ainda.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== PROJETOS ===================== -->
+  <div class="page" id="page-projetos">
+    <div class="card">
+      <h2>Cadastrar Projeto</h2>
+      <div id="alert-proj" class="alert"></div>
+      <label>Nome do Projeto</label>
+      <input type="text" id="nomeProjeto" placeholder="Ex: Vacinação em Massa, App Mobile..." />
+      <div class="form-row">
+        <div>
+          <label>Data de Início</label>
+          <input type="date" id="dataInicioProjeto" />
+        </div>
+        <div>
+          <label>Data de Fim</label>
+          <input type="date" id="dataFimProjeto" />
+        </div>
+      </div>
+      <button class="btn btn-success" onclick="cadastrarProjeto()">Salvar Projeto</button>
+    </div>
+
+    <div class="card">
+      <div class="section-header">
+        <h2>Projetos Cadastrados</h2>
+        <span class="counter" id="countProjetos">0</span>
+      </div>
+      <div id="tabelaProjetos">
+        <div class="empty-state"><span>📋</span>Nenhum projeto cadastrado ainda.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== VINCULAR ===================== -->
+  <div class="page" id="page-vincular">
+    <div class="card">
+      <h2>Vincular Funcionário a Projeto</h2>
+      <div id="alert-vincular" class="alert"></div>
+      <label>Projeto</label>
+      <select id="projetoVincular">
+        <option value="">-- Selecione um projeto --</option>
+      </select>
+      <label>Funcionário</label>
+      <select id="funcionarioVincular">
+        <option value="">-- Selecione um funcionário --</option>
+      </select>
+      <button class="btn btn-warning" onclick="vincularFuncionario()">Vincular</button>
+    </div>
+
+    <div class="card">
+      <h2>Buscar Projetos por Funcionário</h2>
+      <div class="inline-row">
+        <div class="grow">
+          <label>Funcionário</label>
+          <select id="funcionarioBusca">
+            <option value="">-- Selecione um funcionário --</option>
+          </select>
+        </div>
+        <button class="btn" style="margin-bottom:14px" onclick="buscarPorFuncionario()">Buscar</button>
+      </div>
+      <div id="resultadoBusca"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>PetCare &copy; 2025 &mdash; Facens &mdash; Projeto Acadêmico</footer>
+
+<script>
+  // ---- Estado local (simula o backend) ----
+  let setores = [];
+  let funcionarios = [];
+  let projetos = [];
+  let nextSetorId = 1;
+  let nextFuncId = 1;
+  let nextProjId = 1;
+
+  const BASE_URL = "http://localhost:8080"; // trocar se necessário
+
+  // ---- Navegação ----
+  function showPage(name, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    btn.classList.add('active');
+
+    if (name === 'funcionarios') popularSelectSetores();
+    if (name === 'vincular') { popularSelectProjetos(); popularSelectFuncionarios(); }
+  }
+
+  // ---- Alertas ----
+  function showAlert(id, msg, tipo) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.className = 'alert ' + tipo;
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 3000);
+  }
+
+  // ---- SETORES ----
+  function cadastrarSetor() {
+    const nome = document.getElementById('nomeSetor').value.trim();
+    if (!nome) { showAlert('alert-setor', 'Preencha o nome do setor!', 'error'); return; }
+
+    // Tenta API, se falhar usa local
+    fetch(BASE_URL + '/setores', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nome })
+    })
+    .then(r => r.json())
+    .then(data => {
+      setores.push(data);
+      document.getElementById('nomeSetor').value = '';
+      showAlert('alert-setor', 'Setor cadastrado com sucesso!', 'success');
+      renderSetores();
+    })
+    .catch(() => {
+      // modo offline
+      setores.push({ id: nextSetorId++, nome });
+      document.getElementById('nomeSetor').value = '';
+      showAlert('alert-setor', 'Setor cadastrado! (modo offline)', 'success');
+      renderSetores();
+    });
+  }
+
+  function renderSetores() {
+    const el = document.getElementById('tabelaSetores');
+    document.getElementById('countSetores').textContent = setores.length;
+    if (setores.length === 0) {
+      el.innerHTML = '<div class="empty-state"><span>🏢</span>Nenhum setor cadastrado ainda.</div>';
+      return;
+    }
+    let html = '<table><thead><tr><th>#</th><th>Nome</th></tr></thead><tbody>';
+    setores.forEach(s => {
+      html += `<tr><td>${s.id}</td><td>${s.nome}</td></tr>`;
+    });
+    html += '</tbody></table>';
+    el.innerHTML = html;
+  }
+
+  // ---- FUNCIONÁRIOS ----
+  function popularSelectSetores() {
+    const sel = document.getElementById('setorFuncionario');
+    sel.innerHTML = '<option value="">-- Selecione um setor --</option>';
+    setores.forEach(s => {
+      sel.innerHTML += `<option value="${s.id}">${s.nome}</option>`;
+    });
+  }
+
+  function cadastrarFuncionario() {
+    const nome = document.getElementById('nomeFuncionario').value.trim();
+    const cargo = document.getElementById('cargoFuncionario').value.trim();
+    const setorId = document.getElementById('setorFuncionario').value;
+
+    if (!nome || !cargo || !setorId) {
+      showAlert('alert-func', 'Preencha todos os campos!', 'error');
+      return;
+    }
+
+    const setor = setores.find(s => s.id == setorId);
+    const payload = { nome, cargo, setor: { id: parseInt(setorId) } };
+
+    fetch(BASE_URL + '/funcionarios', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(r => r.json())
+    .then(data => {
+      funcionarios.push({ ...data, setor });
+      limparFuncionario();
+      showAlert('alert-func', 'Funcionário cadastrado com sucesso!', 'success');
+      renderFuncionarios();
+    })
+    .catch(() => {
+      funcionarios.push({ id: nextFuncId++, nome, cargo, setor });
+      limparFuncionario();
+      showAlert('alert-func', 'Funcionário cadastrado! (modo offline)', 'success');
+      renderFuncionarios();
+    });
+  }
+
+  function limparFuncionario() {
+    document.getElementById('nomeFuncionario').value = '';
+    document.getElementById('cargoFuncionario').value = '';
+    document.getElementById('setorFuncionario').value = '';
+  }
+
+  function renderFuncionarios() {
+    const el = document.getElementById('tabelaFuncionarios');
+    document.getElementById('countFuncionarios').textContent = funcionarios.length;
+    if (funcionarios.length === 0) {
+      el.innerHTML = '<div class="empty-state"><span>👤</span>Nenhum funcionário cadastrado ainda.</div>';
+      return;
+    }
+    let html = '<table><thead><tr><th>#</th><th>Nome</th><th>Cargo</th><th>Setor</th></tr></thead><tbody>';
+    funcionarios.forEach(f => {
+      const nomeSetor = f.setor ? f.setor.nome : '—';
+      html += `<tr>
+        <td>${f.id}</td>
+        <td>${f.nome}</td>
+        <td>${f.cargo}</td>
+        <td><span class="tag setor">${nomeSetor}</span></td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+    el.innerHTML = html;
+  }
+
+  // ---- PROJETOS ----
+  function cadastrarProjeto() {
+    const nome = document.getElementById('nomeProjeto').value.trim();
+    const dataInicio = document.getElementById('dataInicioProjeto').value;
+    const dataFim = document.getElementById('dataFimProjeto').value;
+
+    if (!nome || !dataInicio || !dataFim) {
+      showAlert('alert-proj', 'Preencha todos os campos!', 'error');
+      return;
+    }
+
+    const payload = { nome, dataInicio, dataFim };
+
+    fetch(BASE_URL + '/projetos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(r => r.json())
+    .then(data => {
+      projetos.push(data);
+      limparProjeto();
+      showAlert('alert-proj', 'Projeto cadastrado com sucesso!', 'success');
+      renderProjetos();
+    })
+    .catch(() => {
+      projetos.push({ id: nextProjId++, nome, dataInicio, dataFim, funcionarios: [] });
+      limparProjeto();
+      showAlert('alert-proj', 'Projeto cadastrado! (modo offline)', 'success');
+      renderProjetos();
+    });
+  }
+
+  function limparProjeto() {
+    document.getElementById('nomeProjeto').value = '';
+    document.getElementById('dataInicioProjeto').value = '';
+    document.getElementById('dataFimProjeto').value = '';
+  }
+
+  function renderProjetos() {
+    const el = document.getElementById('tabelaProjetos');
+    document.getElementById('countProjetos').textContent = projetos.length;
+    if (projetos.length === 0) {
+      el.innerHTML = '<div class="empty-state"><span>📋</span>Nenhum projeto cadastrado ainda.</div>';
+      return;
+    }
+    let html = '<table><thead><tr><th>#</th><th>Nome</th><th>Início</th><th>Fim</th><th>Funcionários</th></tr></thead><tbody>';
+    projetos.forEach(p => {
+      const funcs = (p.funcionarios || []).map(f => `<span class="tag">${f.nome}</span>`).join('') || '<span style="color:#ccc">—</span>';
+      html += `<tr>
+        <td>${p.id}</td>
+        <td>${p.nome}</td>
+        <td>${formatarData(p.dataInicio)}</td>
+        <td>${formatarData(p.dataFim)}</td>
+        <td>${funcs}</td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+    el.innerHTML = html;
+  }
+
+  function formatarData(d) {
+    if (!d) return '—';
+    const parts = d.split('-');
+    if (parts.length !== 3) return d;
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  }
+
+  // ---- VINCULAR ----
+  function popularSelectProjetos() {
+    const sel = document.getElementById('projetoVincular');
+    sel.innerHTML = '<option value="">-- Selecione um projeto --</option>';
+    projetos.forEach(p => {
+      sel.innerHTML += `<option value="${p.id}">${p.nome}</option>`;
+    });
+  }
+
+  function popularSelectFuncionarios() {
+    ['funcionarioVincular', 'funcionarioBusca'].forEach(id => {
+      const sel = document.getElementById(id);
+      sel.innerHTML = '<option value="">-- Selecione um funcionário --</option>';
+      funcionarios.forEach(f => {
+        sel.innerHTML += `<option value="${f.id}">${f.nome}</option>`;
+      });
+    });
+  }
+
+  function vincularFuncionario() {
+    const projetoId = document.getElementById('projetoVincular').value;
+    const funcionarioId = document.getElementById('funcionarioVincular').value;
+
+    if (!projetoId || !funcionarioId) {
+      showAlert('alert-vincular', 'Selecione um projeto e um funcionário!', 'error');
+      return;
+    }
+
+    fetch(`${BASE_URL}/projetos/${projetoId}/funcionario/${funcionarioId}`, { method: 'PUT' })
+    .then(r => r.json())
+    .then(data => {
+      const proj = projetos.find(p => p.id == projetoId);
+      const func = funcionarios.find(f => f.id == funcionarioId);
+      if (proj && func) {
+        if (!proj.funcionarios) proj.funcionarios = [];
+        if (!proj.funcionarios.find(f => f.id == func.id)) proj.funcionarios.push(func);
+      }
+      showAlert('alert-vincular', 'Funcionário vinculado com sucesso!', 'success');
+      renderProjetos();
+    })
+    .catch(() => {
+      const proj = projetos.find(p => p.id == projetoId);
+      const func = funcionarios.find(f => f.id == funcionarioId);
+      if (proj && func) {
+        if (!proj.funcionarios) proj.funcionarios = [];
+        if (!proj.funcionarios.find(f => f.id == func.id)) {
+          proj.funcionarios.push(func);
+          showAlert('alert-vincular', 'Vinculado! (modo offline)', 'success');
+        } else {
+          showAlert('alert-vincular', 'Funcionário já está nesse projeto.', 'error');
+        }
+      }
+      renderProjetos();
+    });
+  }
+
+  function buscarPorFuncionario() {
+    const funcId = document.getElementById('funcionarioBusca').value;
+    const el = document.getElementById('resultadoBusca');
+
+    if (!funcId) {
+      el.innerHTML = '<div class="alert error" style="display:block">Selecione um funcionário.</div>';
+      return;
+    }
+
+    fetch(`${BASE_URL}/projetos/funcionario/${funcId}`)
+    .then(r => r.json())
+    .then(data => renderResultadoBusca(data))
+    .catch(() => {
+      // modo offline: filtra local
+      const projetosDoFunc = projetos.filter(p =>
+        p.funcionarios && p.funcionarios.find(f => f.id == funcId)
+      );
+      renderResultadoBusca(projetosDoFunc);
+    });
+  }
+
+  function renderResultadoBusca(lista) {
+    const el = document.getElementById('resultadoBusca');
+    if (!lista || lista.length === 0) {
+      el.innerHTML = '<div class="empty-state" style="padding:20px"><span>🔍</span>Nenhum projeto encontrado para este funcionário.</div>';
+      return;
+    }
+    let html = '<table><thead><tr><th>#</th><th>Nome</th><th>Início</th><th>Fim</th></tr></thead><tbody>';
+    lista.forEach(p => {
+      html += `<tr><td>${p.id}</td><td>${p.nome}</td><td>${formatarData(p.dataInicio)}</td><td>${formatarData(p.dataFim)}</td></tr>`;
+    });
+    html += '</tbody></table>';
+    el.innerHTML = html;
+  }
+</script>
+</body>
+</html>

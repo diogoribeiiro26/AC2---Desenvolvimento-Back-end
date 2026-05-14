@@ -1,0 +1,13 @@
+com\facens\petcare\projeto\repository\ProjetoRepository.class
+com\facens\petcare\projeto\controller\SetorController.class
+com\facens\petcare\projeto\PetcareApplication.class
+com\facens\petcare\projeto\service\FuncionarioService.class
+com\facens\petcare\projeto\service\SetorService.class
+com\facens\petcare\projeto\controller\FuncionarioController.class
+com\facens\petcare\projeto\service\ProjetoService.class
+com\facens\petcare\projeto\entity\Setor.class
+com\facens\petcare\projeto\repository\FuncionarioRepository.class
+com\facens\petcare\projeto\entity\Projeto.class
+com\facens\petcare\projeto\repository\SetorRepository.class
+com\facens\petcare\projeto\entity\Funcionario.class
+com\facens\petcare\projeto\controller\ProjetoController.class
